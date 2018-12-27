@@ -1,0 +1,101 @@
+let Blue = 0
+let RGB: neopixel.Strip = null
+let Green = 0
+let Work = 0
+let Red = 0
+function 前() {
+    maqueen.MotorRun(maqueen.aMotors.M1, maqueen.Dir.CW, 255)
+    maqueen.MotorRun(maqueen.aMotors.M2, maqueen.Dir.CW, 255)
+}
+function 後() {
+    maqueen.MotorRun(maqueen.aMotors.M1, maqueen.Dir.CCW, 155)
+    maqueen.MotorRun(maqueen.aMotors.M2, maqueen.Dir.CCW, 155)
+}
+input.onGesture(Gesture.LogoDown, function () {
+    radio.sendNumber(1)
+})
+input.onButtonPressed(Button.A, function () {
+    radio.sendNumber(1)
+})
+function Stop() {
+    maqueen.motorStopAll()
+}
+input.onGesture(Gesture.LogoUp, function () {
+    radio.sendNumber(2)
+})
+radio.onReceivedNumber(function (receivedNumber) {
+    if (receivedNumber == 0) {
+        Stop()
+    } else if (receivedNumber == 1) {
+        前()
+    } else if (receivedNumber == 2) {
+        後()
+    } else if (receivedNumber == 3) {
+        左()
+    } else if (receivedNumber == 4) {
+        右()
+    } else {
+        music.playTone(988, music.beat(BeatFraction.Half))
+        music.playTone(988, music.beat(BeatFraction.Half))
+    }
+})
+function 左() {
+    maqueen.MotorRun(maqueen.aMotors.M1, maqueen.Dir.CW, 0)
+    maqueen.MotorRun(maqueen.aMotors.M2, maqueen.Dir.CW, 200)
+}
+input.onButtonPressed(Button.B, function () {
+    radio.sendNumber(0)
+})
+function 右() {
+    maqueen.MotorRun(maqueen.aMotors.M1, maqueen.Dir.CW, 200)
+    maqueen.MotorRun(maqueen.aMotors.M2, maqueen.Dir.CW, 0)
+}
+input.onGesture(Gesture.TiltLeft, function () {
+    radio.sendNumber(3)
+})
+input.onGesture(Gesture.TiltRight, function () {
+    radio.sendNumber(4)
+})
+input.onButtonPressed(Button.AB, function () {
+    radio.sendNumber(5)
+})
+radio.setGroup(1)
+// Work:動作代號
+//
+// 0>停車
+//
+// 1>前進
+//
+// 2>後退
+//
+// 3>左轉
+//
+// 4>右轉
+//
+// 5>喇叭
+//
+Work = 0
+RGB = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
+basic.forever(function () {
+    Red = 0
+    Green = 0
+    Blue = 255
+    for (let i = 0; i < 255; i++) {
+        Red += 1
+        Blue += -1
+        RGB.showColor(neopixel.rgb(Red, Green, Blue))
+        basic.pause(1)
+    }
+    for (let i = 0; i < 255; i++) {
+        Red += -1
+        Green += 1
+        RGB.showColor(neopixel.rgb(Red, Green, Blue))
+        basic.pause(1)
+    }
+    for (let i = 0; i < 255; i++) {
+        Blue += 1
+        Green += -1
+        RGB.showColor(neopixel.rgb(Red, Green, Blue))
+        basic.pause(1)
+    }
+})
